@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<c:Control xmlns:c="http://www.ansys.com/control" schemaVersion="1.0">
+
+  <Stackup schemaVersion="1.0">
+    <Materials>
+      <Material Name="FR4_epoxy">
+        <Permittivity>
+          <Double>4.4</Double>
+        </Permittivity>
+        <DielectricLossTangent>
+          <Double>0.02</Double>
+        </DielectricLossTangent>
+        <ThermalConductivity>
+          <Double>0.294</Double>
+        </ThermalConductivity>
+        <SpecificHeat>
+          <Double>1150</Double>
+        </SpecificHeat>
+        <ThermalExpansionCoefficient>
+          <Double>1.5e-05</Double>
+        </ThermalExpansionCoefficient>
+        <MassDensity>
+          <Double>1900</Double>
+        </MassDensity>
+        <YoungsModulus>
+          <Double>11000000000</Double>
+        </YoungsModulus>
+        <PoissonsRatio>
+          <Double>0.28</Double>
+        </PoissonsRatio>
+      </Material>
+      <Material Name="copper">
+        <Permeability>
+          <Double>0.999991</Double>
+        </Permeability>
+        <Conductivity>
+          <Double>58000000</Double>
+        </Conductivity>
+        <ThermalConductivity>
+          <Double>400</Double>
+        </ThermalConductivity>
+        <SpecificHeat>
+          <Double>385</Double>
+        </SpecificHeat>
+        <ThermalExpansionCoefficient>
+          <Double>1.77e-05</Double>
+        </ThermalExpansionCoefficient>
+        <MassDensity>
+          <Double>8933</Double>
+        </MassDensity>
+        <YoungsModulus>
+          <Double>120000000000</Double>
+        </YoungsModulus>
+        <PoissonsRatio>
+          <Double>0.38</Double>
+        </PoissonsRatio>
+      </Material>
+    </Materials>
+    <ELayers LengthUnit="mm">
+      <Dielectrics>
+        <Layer Material="air" Name="Air Top Generated" Thickness="0.0171453000000002"/>
+        <Layer Color="#804000" Material="FR4_epoxy" Name="Dielectric_1" Thickness="0.1111253"/>
+        <Layer Color="#ffff00" Material="FR4_epoxy" Name="Dielectric_2" Thickness="0.1695453"/>
+        <Layer Color="#800000" Material="FR4_epoxy" Name="Dielectric_3" Thickness="0.1619253"/>
+        <Layer Color="#004080" Material="FR4_epoxy" Name="Dielectric_4" Thickness="0.1695453"/>
+        <Layer Color="#ff7a7a" Material="FR4_epoxy" Name="Dielectric_5" Thickness="0.1619253"/>
+        <Layer Color="#808000" Material="FR4_epoxy" Name="Dielectric_6" Thickness="0.2711453"/>
+        <Layer Color="#0000ff" Material="FR4_epoxy" Name="Dielectric_7" Thickness="0.2711453"/>
+        <Layer Color="#fa0000" Material="FR4_epoxy" Name="Dielectric_8" Thickness="0.2711453"/>
+        <Layer Color="#bdbd00" Material="FR4_epoxy" Name="Dielectric_9" Thickness="0.2711453"/>
+        <Layer Color="#ff0080" Material="FR4_epoxy" Name="Dielectric_10" Thickness="0.2711453"/>
+        <Layer Color="#00ff00" Material="FR4_epoxy" Name="Dielectric_11" Thickness="0.09334530000000001"/>
+      </Dielectrics>
+      <Layers>
+        <Layer Color="#00ff00" Elevation="2.2231383" Material="copper" Name="Top_L1" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#8000ff" Elevation="2.112013" Material="copper" Name="GND_1_L2" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#008080" Elevation="1.9424677" Material="copper" Name="Inner_Layer_1_L3" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#ff8000" Elevation="1.7805424" Material="copper" Name="GND_2_L4" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#00ff80" Elevation="1.6109971" Material="copper" Name="Inner_Layer_2_L5" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#3dffff" Elevation="1.4490718" Material="copper" Name="GND_3_L6" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#bd00bd" Elevation="1.1779265" Material="copper" Name="VCC1_L7" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#008000" Elevation="0.9067812" Material="copper" Name="VCC2_L8" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#00bdbd" Elevation="0.6356359" Material="copper" Name="GND_4_L9" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#408000" Elevation="0.3644906" Material="copper" Name="Inner_Layer_3_L10" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#000080" Elevation="0.09334530000000001" Material="copper" Name="GND_5_L11" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#804000" Elevation="0" Material="copper" Name="Bottom_L12" Thickness="0.0171453" Type="conductor"/>
+        <Layer Color="#353981" Name="Outline" Type="outline"/>
+      </Layers>
+    </ELayers>
+  </Stackup>
+
+</c:Control>

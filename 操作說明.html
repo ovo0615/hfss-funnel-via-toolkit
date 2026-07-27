@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HFSS 漏斗 Via 建模工具　操作說明</title>
+<style>
+  :root {
+    --accent: #b5651d;
+    --accent-soft: #e8a06a;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --line: #e1e4e8;
+    --text: #2b2b2b;
+    --muted: #777;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Calibri", "Microsoft JhengHei", sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    margin: 0;
+    padding: 0 0 60px;
+    line-height: 1.75;
+  }
+  header {
+    background: linear-gradient(135deg, #8a4513, var(--accent));
+    color: #fff;
+    padding: 32px 40px;
+  }
+  header h1 { margin: 0 0 6px; font-size: 26px; }
+  header .sub { opacity: .9; font-size: 14px; }
+  main {
+    max-width: 980px;
+    margin: -24px auto 0;
+    padding: 0 20px;
+  }
+  section {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin: 18px 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,.04);
+  }
+  h2 {
+    font-size: 19px;
+    border-left: 5px solid var(--accent);
+    padding-left: 12px;
+    margin: 4px 0 16px;
+  }
+  h3 { font-size: 15px; color: var(--accent); margin: 18px 0 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 14px;
+  }
+  th, td {
+    border: 1px solid var(--line);
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th { background: #faf3ec; }
+  code, pre {
+    font-family: "Consolas", "Calibri", monospace;
+    background: #2b2b2b;
+    color: #e6e6e6;
+    border-radius: 6px;
+  }
+  code { padding: 1px 6px; font-size: 13px; }
+  pre { padding: 12px 16px; overflow-x: auto; font-size: 13px; }
+  pre code { background: none; padding: 0; }
+  ol, ul { padding-left: 22px; }
+  li { margin: 4px 0; }
+  .figure { text-align: center; margin: 18px 0 6px; }
+  .figure img, .figure video {
+    max-width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .figure figcaption { color: var(--muted); font-size: 13px; margin-top: 8px; }
+  .note {
+    background: #fff8f0;
+    border: 1px solid var(--accent-soft);
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin: 12px 0;
+    font-size: 14px;
+  }
+  .ok { color: #1a7f37; font-weight: bold; }
+  .bad { color: #c0392b; font-weight: bold; }
+  .sign { text-align: center; color: var(--muted); font-size: 13px; margin-top: 24px; }
+  .kbd {
+    background: #f0f0f0; border: 1px solid #ccc; border-bottom-width: 2px;
+    border-radius: 5px; padding: 1px 7px; font-size: 13px; color: #333;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>HFSS 漏斗 Via 建模工具　操作說明</h1>
+  <div class="sub">堆疊雷射微孔（stacked laser via）自動建模工具｜Ansys HFSS 3D × PyAEDT</div>
+</header>
+
+<main>
+  <section>
+    <h2>一、工具用途</h2>
+    <p>HFSS 3D Layout 只能建立「等徑圓柱 via」，無法做出漏斗狀（堆疊雷射微孔 / stacked laser
+       via）的錐形孔。本工具透過 <strong>PyAEDT</strong> 在 <strong>HFSS 3D 模型器</strong>中，
+       以多段「圓錐台（cone frustum）」沿 Z 軸堆疊，組出上寬下窄的漏斗狀 via，並可直接對齊、
+       取代既有的等徑 via。</p>
+    <figure class="figure">
+      <img src="funnel_via_result.png" alt="建立後的漏斗 Via 幾何">
+      <figcaption>最終效果：工具於 HFSS 3D 中建立的漏斗狀 via（位置與高度自動對齊原 via）</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>二、操作示範影片</h2>
+    <figure class="figure">
+      <video src="範例影片_20260630.mp4" controls preload="metadata" style="width:100%;max-width:900px;">
+        您的瀏覽器不支援影片播放，請直接開啟同資料夾的「範例影片_20260630.mp4」。
+      </video>
+      <figcaption>實際操作示範（若無法播放，請以播放器開啟同資料夾的 範例影片_20260630.mp4）</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>三、環境需求（需先安裝）</h2>
+    <table>
+      <tr><th>項目</th><th>用途</th><th>安裝方式</th></tr>
+      <tr><td>Ansys Electronics Desktop（含 HFSS）</td><td>模擬主程式（預設 2026 R1）</td><td>公司正式安裝版</td></tr>
+      <tr><td>PyAEDT</td><td>Python 控制 AEDT（提供 <code>ansys.aedt.core</code>）。<strong>僅腳本版需要</strong></td><td><code>pip install pyaedt</code></td></tr>
+      <tr><td>Tkinter</td><td>GUI 介面</td><td>Python 內建，免安裝</td></tr>
+    </table>
+    <div class="note">執行檔（.exe）版已內含 Python 與 PyAEDT，<strong>不必另外安裝</strong>；但<strong>仍需客戶端已安裝 AEDT/HFSS</strong>，因為本工具是去遙控你已安裝的 AEDT。</div>
+    <p>腳本版安裝完成後可先驗證（不報錯即代表 PyAEDT 可用）：</p>
+    <pre><code>python -c "import ansys.aedt.core"</code></pre>
+  </section>
+
+  <section>
+    <h2>四、啟動工具</h2>
+    <p>請先開啟 AEDT，打開要加 via 的 HFSS 專案與設計（保持開著），再依下列任一方式啟動工具：</p>
+
+    <h3>方式 A：執行檔版（免安裝 Python，建議一般使用者）</h3>
+    <p>直接<strong>雙擊</strong> <code>funnel_via_gui.exe</code> 即可開啟工具。</p>
+
+    <h3>方式 B：Python 腳本版</h3>
+    <ol>
+      <li>將本工具資料夾解壓到任意位置。</li>
+      <li>在該資料夾按住 <span class="kbd">Shift</span> 並於空白處按右鍵，選「在這裡開啟 PowerShell / 終端機」。</li>
+      <li>輸入下列指令（在腳本所在資料夾執行，不需完整路徑）：</li>
+    </ol>
+    <pre><code>python funnel_via_gui.py</code></pre>
+    <div class="note">路徑會以你實際存放的位置為準，不必與本說明相同。</div>
+  </section>
+
+  <section>
+    <h2>五、介面說明</h2>
+
+    <h3>1. 連線設定（最上方）</h3>
+    <ul>
+      <li><strong>AEDT 版本</strong>：預設 <code>2026.1</code>（即 2026 R1），可改成實機版本。</li>
+      <li><strong>via 材質</strong>：預設 <code>copper</code>。</li>
+      <li><strong>連線 AEDT</strong>：接上目前已開啟的 AEDT／專案／設計，狀態列顯示設計名稱。</li>
+    </ul>
+
+    <h3>2. 疊構表 STACKUP（左）</h3>
+    <ul>
+      <li>由上往下列出每層，格式：<code>kind,name,thickness[,layer]</code>；<code>kind</code>＝ <code>soldermask</code> / <code>copper</code> / <code>dielectric</code>，<code>copper</code> 需填 <code>layer</code> 編號。單位 mil，可直接編輯。</li>
+      <li><strong>「⤵ 從 3D Layout 設計讀取真實疊構」按鈕（強烈建議）</strong>：自動讀取<strong>同專案的 3D Layout 設計</strong>真實層數與厚度，一鍵填好整張表。
+        <ul>
+          <li>採用 AEDT 原生 API（不依賴 pyedb），不必另選 EDB 資料夾。</li>
+          <li>讀完自動切回原本的 HFSS 設計。</li>
+          <li>這是讓漏斗節點精準對齊每層銅箔的關鍵——手打疊構若層數/比例與模型不符，節點會對不準。</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h3>3. Layer change 表（中）</h3>
+    <ul>
+      <li>只需填 <code>start,end</code>（每行一段雷射打孔），段數＝行數。</li>
+      <li><strong>「↻ 依疊構自動產生（每相鄰銅層一段）」按鈕</strong>：依疊構銅層數自動產生（N 層 → N−1 段），不必手動數。</li>
+      <li>進階：個別覆寫某段寬度時寫成 <code>start,end,drill,finish</code>（後兩欄覆寫全域寬度）。</li>
+    </ul>
+
+    <h3>4. Via 寬度面板 + 即時預覽（右）</h3>
+    <ul>
+      <li><strong>寬端（上, Drill）</strong>、<strong>窄端（下, Finish）</strong>：直徑（mil），套用到所有段。</li>
+      <li><strong>側視預覽圖</strong>：隨數值與段數即時重畫漏斗剖面，直觀確認粗細與形狀。</li>
+      <li><strong>寬端＝原選取 via 外徑（自動帶入）</strong>：勾選後<strong>立即</strong>把抓到的 via 外徑帶入「寬端」並更新預覽；建立時每顆漏斗各自採用自己的外徑。</li>
+    </ul>
+
+    <h3>5. Via 來源</h3>
+    <p>兩種抓取方式（擇一）：</p>
+    <ul>
+      <li><strong>① 抓取 AEDT 中『選取的 via』</strong>：先在 AEDT 手動框選／點選 via，再按此鈕。</li>
+      <li><strong>①′ 自動抓取所有名稱開頭符合的物件</strong>：不必手動選取，自動掃描整個設計。
+        <ul>
+          <li><strong>名稱開頭</strong>：預設 <code>via</code>，不分大小寫。</li>
+          <li>自動略過名稱含 <code>_funnel</code> 的物件（先前產生的漏斗），避免重複處理。</li>
+        </ul>
+      </li>
+    </ul>
+    <p>兩個選項：</p>
+    <ul>
+      <li><strong>依 via 頭尾錨定＋疊構比例定位節點（建議）</strong>：勾選後讓每節點落在真實層位置（每節介於相鄰兩層之間）。
+        <ul>
+          <li><strong>若已按過「⤵ 從 3D Layout 設計讀取真實疊構」</strong>，工具會<strong>自動升級為「真實層 Z 定位」</strong>：節點直接放在 layout 讀到的真實層 elevation，只用 via 做整體 offset 對齊（純平移、不拉伸），對 via 殘段（stub）/防焊免疫，節點精準落在每層銅箔（pad）上。執行訊息會印出每顆 via 的 <code>offset</code> 與「端點殘差」供驗證。</li>
+          <li>若未讀 layout（僅手打疊構），則以 via 頭尾為錨點、依疊構比例定位（對整體縮放誤差免疫）。</li>
+        </ul>
+      </li>
+      <li><strong>取代模式</strong>：建立漏斗後刪除原本的等徑圓柱 via。</li>
+    </ul>
+    <div class="note">另有「手動輸入座標」模式，可直接輸入 <code>x,y</code>（mil）逐顆建立。</div>
+  </section>
+
+  <section>
+    <h2>六、操作流程（建議順序）</h2>
+
+    <h3>0. 前置準備：讓「原專案」同時含 3D Layout 與 HFSS 設計</h3>
+    <p>本工具需要在<strong>同一個專案</strong>中同時存在：</p>
+    <ul>
+      <li><strong>3D Layout 設計</strong> ── 疊構來源（工具以原生 API 讀取真實層 Z）。</li>
+      <li><strong>HFSS 3D 設計</strong> ── via 所在、漏斗建立的地方。</li>
+    </ul>
+    <p>建議用下列方式備妥（讓 HFSS 設計與 3D Layout 設計同在原專案）：</p>
+    <ol>
+      <li>在 <strong>HFSS 3D Layout 設計</strong>使用 <strong>Export</strong> 功能，輸出成一個<strong>新專案</strong>（內含轉出的 HFSS 3D 設計）。</li>
+      <li>開啟該輸出後的新專案，於專案樹對其中的 <strong>HFSS 設計</strong>按右鍵 <strong>Copy</strong>（複製）。</li>
+      <li>回到<strong>原本的專案</strong>（含 3D Layout 設計），於專案節點按右鍵 <strong>Paste</strong>（貼上）該 HFSS 設計。</li>
+      <li>如此原專案即同時擁有 3D Layout 與 HFSS 設計：工具可在 HFSS 設計建立漏斗，並從同專案的 3D Layout 讀取真實疊構。</li>
+    </ol>
+    <div class="note">若你的專案已同時具備這兩種設計，可略過本步驟。</div>
+
+    <h3>正式流程</h3>
+    <ol>
+      <li><strong>開啟 AEDT</strong> 與上述已備妥的專案，切到要加 via 的 <strong>HFSS 設計</strong>。</li>
+      <li>啟動工具，確認 <strong>AEDT 版本</strong>，按 <span class="kbd">連線 AEDT</span>。</li>
+      <li>按 <span class="kbd">⤵ 從 3D Layout 設計讀取真實疊構</span> → 疊構表自動填入真實層數與厚度。</li>
+      <li>按 <span class="kbd">↻ 依疊構自動產生</span> → 自動產生對應段數的 Layer change。</li>
+      <li>設定 <strong>Via 寬度</strong>，或勾 <strong>「寬端＝原 via 外徑」</strong> 自動帶入；看著預覽圖確認。</li>
+      <li>選擇 <strong>Via 來源</strong>：大量 via 用 <span class="kbd">①′ 自動抓取</span>（確認前綴正確）；或 <span class="kbd">① 抓取選取的 via</span>。</li>
+      <li><strong>勾選「依 via 頭尾錨定＋疊構比例定位節點」</strong>；視需要勾 <strong>取代模式</strong>。</li>
+      <li>按 <span class="kbd">② 建立漏斗 Via</span>，下方「執行訊息」即時顯示進度。</li>
+      <li>存檔在 AEDT 內進行即可。</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>七、驗證方式（若該案例有 non-functional pad）</h2>
+    <p>部分案例的 via 在每層銅箔處會有一圈一圈的 <strong>non-functional pad</strong>，剛好標出每層真實 Z。建立完成後切到側視角度檢查：</p>
+    <ul>
+      <li><span class="ok">✅ 正確</span>：每一節漏斗的上下端剛好落在相鄰兩個 pad 之間，節點與 pad 對齊。</li>
+      <li><span class="bad">❌ 某節沒對齊 pad</span>：代表疊構表層數或相對比例與模型不符。建議改用「⤵ 從 3D Layout 設計讀取真實疊構」重讀，再重建。</li>
+    </ul>
+    <div class="note">non-functional pad 不是每個案例都有，僅作為「驗證」用途，不作為建立依據。</div>
+  </section>
+
+  <section>
+    <h2>八、注意事項</h2>
+    <ul>
+      <li><strong>疊構務必與模型一致</strong>：建議一律用「⤵ 從 3D Layout 設計讀取真實疊構」自動帶入。手打疊構若層數或相對比例和模型不符，漏斗節點就會對不準。</li>
+      <li><strong>自動抓取</strong> 比對整個設計中名稱符合前綴的物件，前綴需夠精準；若無共同前綴請改用手動選取。</li>
+      <li>「依 via 頭尾錨定＋疊構比例定位節點」會把漏斗填滿原 via 並讓節點落在真實層位置，建議保持勾選。</li>
+      <li><strong>直徑（粗細）</strong>由 Via 寬度面板決定，與 Z 範圍無關；要貼合原 via 外徑就勾「寬端＝原 via 外徑」。</li>
+      <li>exe 版仍需客戶端<strong>已安裝 AEDT/HFSS</strong>，且版本對應 GUI 上填的「AEDT 版本」。</li>
+      <li>若 <code>create_cone</code> 在你的版本回報參數錯誤，工具已內建自動改用 <code>cs_axis</code> 的備援，通常不需手動處理。</li>
+    </ul>
+  </section>
+
+  <div class="sign">此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供</div>
+</main>
+</body>
+</html>
