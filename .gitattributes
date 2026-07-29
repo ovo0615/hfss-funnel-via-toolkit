@@ -1,0 +1,13 @@
+# 此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
+# Windows 啟動腳本必須以 CRLF 進入 Source ZIP / Release ZIP，
+# 否則 cmd.exe 與部分 PowerShell 主機在解壓後可能無法正確解析。
+
+* text=auto
+
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+*.png binary
+*.mp4 binary
+*.exe binary

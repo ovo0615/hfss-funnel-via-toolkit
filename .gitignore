@@ -1,5 +1,6 @@
 __pycache__/
 *.py[cod]
+.venv/
 *.aedt
 *.aedb/
 *.aedtresults/
@@ -7,7 +8,16 @@ __pycache__/
 *.log
 *.mp4
 *.exe
-*.png
 restored_files/
 node_modules/
+*.tsbuildinfo
+
+# 圖片：僅發布文件用圖進版控
+*.png
+!docs/images/*.png
+
+# 建置產物：唯獨 production 前端必須進入 Source ZIP，
+# 否則使用者以「Code → Download ZIP」下載後無法啟動。
 dist/
+!funnel-via-web/frontend/dist/
+!funnel-via-web/frontend/dist/**

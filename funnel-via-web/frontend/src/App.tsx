@@ -52,7 +52,6 @@ export default function App() {
   const [autodia, setAutodia] = useState(false);
   
   const [srcMode, setSrcMode] = useState<"grab" | "manual">("grab");
-  const [grabMode, setGrabMode] = useState<"selected" | "prefix">("selected");
   const [prefix, setPrefix] = useState("via");
   const [fit, setFit] = useState(true);
   const [replace, setReplace] = useState(false);

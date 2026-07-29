@@ -78,7 +78,7 @@ export function buildScene(cfg: SegConfig): Scene | null {
     // Z=0 is top, going down
     let currentZ = 0;
     
-    for (const [s, e, d, f] of changes) {
+    for (const [, , d, f] of changes) {
       const topRad = (d !== null ? d : drill) / 2;
       const botRad = (f !== null ? f : finish) / 2;
       

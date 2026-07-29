@@ -1,0 +1,20 @@
+# Funnel Via Web App - 後端直接相依套件（已實測版本）
+# 此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
+#
+# 實測環境：Windows 11 x64 + Python 3.10.20 / 3.12.x（64 位元）
+# 安裝方式：由 start.bat 自動於 backend\.venv 內安裝，使用者不需手動執行。
+#
+# 套件用途：
+#   fastapi     後端 Web 框架，提供 /api 路由與 production 前端靜態檔服務
+#   uvicorn     ASGI 伺服器，於 127.0.0.1 前景執行
+#   websockets  /ws/log 即時執行訊息推播
+#   pydantic    API 請求／回應資料驗證
+#   pyaedt      Ansys AEDT Python 控制介面（ansys.aedt.core），實際建立漏斗 via
+#
+# 首次啟動需要網路連線以下載上述套件；之後離線亦可啟動。
+
+fastapi==0.139.0
+uvicorn==0.51.0
+websockets==16.0
+pydantic==2.13.4
+pyaedt==1.2.0

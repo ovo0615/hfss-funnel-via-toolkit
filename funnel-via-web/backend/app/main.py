@@ -1,7 +1,9 @@
 import asyncio
 import traceback
+from pathlib import Path
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 
@@ -11,11 +13,19 @@ from app.core import (
     parse_layer_info, val_to_mil
 )
 
+# backend/app/main.py -> backend/app -> backend -> funnel-via-web
+FRONTEND_DIST = Path(__file__).resolve().parents[2] / "frontend" / "dist"
+
 app = FastAPI(title="Funnel Via Web App")
 
+# 只服務本機。production 為單一埠同源，dev 模式由 Vite proxy 轉發，
+# 因此僅需開放開發時的 localhost 來源。
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5180",
+        "http://127.0.0.1:5180",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -89,6 +99,11 @@ class BuildReq(BaseModel):
 # =====================================================================
 # Endpoints
 # =====================================================================
+@app.get("/api/health")
+def health():
+    """啟動腳本用來確認服務已就緒，再開啟瀏覽器。"""
+    return {"status": "ok", "frontend_dist": FRONTEND_DIST.is_dir()}
+
 @app.post("/api/connect")
 def connect(req: ConnectReq):
     try:
@@ -322,3 +337,19 @@ def build_funnels(req: BuildReq):
         err = f"[錯誤] 建立失敗：{e}\n{traceback.format_exc()}"
         log_msg(err)
         return {"status": "error", "message": str(e)}
+
+# =====================================================================
+# Production 前端（必須掛在所有 /api 與 /ws 路由之後）
+# =====================================================================
+if FRONTEND_DIST.is_dir():
+    app.mount(
+        "/",
+        StaticFiles(directory=str(FRONTEND_DIST), html=True),
+        name="frontend",
+    )
+else:
+    print(
+        "[警告] 找不到 production 前端 "
+        f"{FRONTEND_DIST}，僅提供 /api 與 /ws。"
+        "請改用 dev.bat（開發模式），或重新下載含 frontend/dist 的壓縮檔。"
+    )
