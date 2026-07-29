@@ -100,8 +100,9 @@
 </head>
 <body>
 <header>
-  <h1>HFSS 漏斗 Via 建模工具　操作說明</h1>
+  <h1>HFSS 漏斗 Via 建模工具（桌面版　Tkinter）　操作說明</h1>
   <div class="sub">堆疊雷射微孔（stacked laser via）自動建模工具｜Ansys HFSS 3D × PyAEDT</div>
+  <div class="sub">本文件說明 Python 腳本版 <code>funnel_via_gui.py</code>；一般使用者建議改用網頁版（雙擊 <code>start.bat</code>，不需自行安裝 Python 與套件）：<a href="操作說明.md">操作說明.md</a></div>
 </header>
 
 <main>
@@ -118,36 +119,25 @@
   </section>
 
   <section>
-    <h2>二、操作示範影片</h2>
-    <figure class="figure">
-      <video src="範例影片_20260630.mp4" controls preload="metadata" style="width:100%;max-width:900px;">
-        您的瀏覽器不支援影片播放，請直接開啟同資料夾的「範例影片_20260630.mp4」。
-      </video>
-      <figcaption>實際操作示範（若無法播放，請以播放器開啟同資料夾的 範例影片_20260630.mp4）</figcaption>
-    </figure>
-  </section>
-
-  <section>
-    <h2>三、環境需求（需先安裝）</h2>
+    <h2>二、環境需求（需先安裝）</h2>
     <table>
       <tr><th>項目</th><th>用途</th><th>安裝方式</th></tr>
-      <tr><td>Ansys Electronics Desktop（含 HFSS）</td><td>模擬主程式（預設 2026 R1）</td><td>公司正式安裝版</td></tr>
-      <tr><td>PyAEDT</td><td>Python 控制 AEDT（提供 <code>ansys.aedt.core</code>）。<strong>僅腳本版需要</strong></td><td><code>pip install pyaedt</code></td></tr>
+      <tr><td>Windows 10／11（64 位元）</td><td>執行環境</td><td>作業系統</td></tr>
+      <tr><td>Ansys Electronics Desktop（含 HFSS）</td><td>模擬主程式（預設 2026 R1）。<strong>商業授權</strong>，本工具是遙控你已安裝的 AEDT</td><td>公司正式安裝版</td></tr>
+      <tr><td>Python 3.10／3.11／3.12（64 位元）</td><td>執行腳本</td><td><a href="https://www.python.org/downloads/windows/">python.org</a></td></tr>
+      <tr><td>PyAEDT</td><td>Python 控制 AEDT（提供 <code>ansys.aedt.core</code>）</td><td><code>pip install pyaedt</code></td></tr>
       <tr><td>Tkinter</td><td>GUI 介面</td><td>Python 內建，免安裝</td></tr>
     </table>
-    <div class="note">執行檔（.exe）版已內含 Python 與 PyAEDT，<strong>不必另外安裝</strong>；但<strong>仍需客戶端已安裝 AEDT/HFSS</strong>，因為本工具是去遙控你已安裝的 AEDT。</div>
-    <p>腳本版安裝完成後可先驗證（不報錯即代表 PyAEDT 可用）：</p>
+    <div class="note">桌面版<strong>不含</strong>任何 Ansys 元件，也不會繞過授權；沒有已安裝且已授權的 AEDT 就無法建立幾何。</div>
+    <p>安裝完成後可先驗證（不報錯即代表 PyAEDT 可用）：</p>
     <pre><code>python -c "import ansys.aedt.core"</code></pre>
+    <div class="note">若不想在系統 Python 安裝套件，建議改用網頁版——它會把所有套件裝在專案內的獨立虛擬環境，不影響系統環境。</div>
   </section>
 
   <section>
-    <h2>四、啟動工具</h2>
-    <p>請先開啟 AEDT，打開要加 via 的 HFSS 專案與設計（保持開著），再依下列任一方式啟動工具：</p>
+    <h2>三、啟動工具</h2>
+    <p>請先開啟 AEDT，打開要加 via 的 HFSS 專案與設計（保持開著），再依下列步驟啟動：</p>
 
-    <h3>方式 A：執行檔版（免安裝 Python，建議一般使用者）</h3>
-    <p>直接<strong>雙擊</strong> <code>funnel_via_gui.exe</code> 即可開啟工具。</p>
-
-    <h3>方式 B：Python 腳本版</h3>
     <ol>
       <li>將本工具資料夾解壓到任意位置。</li>
       <li>在該資料夾按住 <span class="kbd">Shift</span> 並於空白處按右鍵，選「在這裡開啟 PowerShell / 終端機」。</li>
@@ -158,7 +148,7 @@
   </section>
 
   <section>
-    <h2>五、介面說明</h2>
+    <h2>四、介面說明</h2>
 
     <h3>1. 連線設定（最上方）</h3>
     <ul>
@@ -218,7 +208,7 @@
   </section>
 
   <section>
-    <h2>六、操作流程（建議順序）</h2>
+    <h2>五、操作流程（建議順序）</h2>
 
     <h3>0. 前置準備：讓「原專案」同時含 3D Layout 與 HFSS 設計</h3>
     <p>本工具需要在<strong>同一個專案</strong>中同時存在：</p>
@@ -250,7 +240,7 @@
   </section>
 
   <section>
-    <h2>七、驗證方式（若該案例有 non-functional pad）</h2>
+    <h2>六、驗證方式（若該案例有 non-functional pad）</h2>
     <p>部分案例的 via 在每層銅箔處會有一圈一圈的 <strong>non-functional pad</strong>，剛好標出每層真實 Z。建立完成後切到側視角度檢查：</p>
     <ul>
       <li><span class="ok">✅ 正確</span>：每一節漏斗的上下端剛好落在相鄰兩個 pad 之間，節點與 pad 對齊。</li>
@@ -260,13 +250,13 @@
   </section>
 
   <section>
-    <h2>八、注意事項</h2>
+    <h2>七、注意事項</h2>
     <ul>
       <li><strong>疊構務必與模型一致</strong>：建議一律用「⤵ 從 3D Layout 設計讀取真實疊構」自動帶入。手打疊構若層數或相對比例和模型不符，漏斗節點就會對不準。</li>
       <li><strong>自動抓取</strong> 比對整個設計中名稱符合前綴的物件，前綴需夠精準；若無共同前綴請改用手動選取。</li>
       <li>「依 via 頭尾錨定＋疊構比例定位節點」會把漏斗填滿原 via 並讓節點落在真實層位置，建議保持勾選。</li>
       <li><strong>直徑（粗細）</strong>由 Via 寬度面板決定，與 Z 範圍無關；要貼合原 via 外徑就勾「寬端＝原 via 外徑」。</li>
-      <li>exe 版仍需客戶端<strong>已安裝 AEDT/HFSS</strong>，且版本對應 GUI 上填的「AEDT 版本」。</li>
+      <li>本工具需客戶端<strong>已安裝 AEDT/HFSS</strong>，且實機版本要對應 GUI 上填的「AEDT 版本」（例如 <code>2026.1</code>）。</li>
       <li>若 <code>create_cone</code> 在你的版本回報參數錯誤，工具已內建自動改用 <code>cs_axis</code> 的備援，通常不需手動處理。</li>
     </ul>
   </section>
