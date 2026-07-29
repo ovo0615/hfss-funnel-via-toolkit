@@ -30,6 +30,17 @@
 
 完整步驟、介面說明與常見問題：**[docs/操作說明.md](docs/操作說明.md)**
 
+## 練習用範例專案
+
+手邊沒有適合的板子也可以先練習：repo 內附 [`Diff_Via_Example.aedtz`](Diff_Via_Example.aedtz)（AEDT 封存專案，約 0.6 MB），已同時包含工具需要的兩種設計：
+
+| 設計 | 型態 | 用途 |
+|------|------|------|
+| `diffViaNominal` | HFSS 3D Layout | 疊構來源（工具讀取真實層 Z） |
+| `HFSSDesign1` | HFSS 3D | via 所在、漏斗建立的地方 |
+
+在 AEDT 以 **File → Open** 直接開啟 `.aedtz`（AEDT 會自動解壓成專案），切到 `HFSSDesign1`，即可照 [docs/操作說明.md](docs/操作說明.md) 的流程走一遍。範例中的 via 名稱以 `via_` 開頭，可直接用「自動抓取」。
+
 ## 環境需求
 
 **必須自行安裝：**

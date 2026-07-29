@@ -4,7 +4,10 @@ __pycache__/
 *.aedt
 *.aedb/
 *.aedtresults/
+
+# AEDT 封存專案：唯獨練習用範例專案進版控
 *.aedtz
+!Diff_Via_Example.aedtz
 *.log
 *.mp4
 *.exe
