@@ -273,36 +273,90 @@ if ($CheckOnly) {
 }
 
 # =============================================================================
-# 5. 前景啟動服務；服務就緒後才開啟瀏覽器
+# 5. 服務以子程序啟動；主程序輪詢就緒後才開啟瀏覽器
 # =============================================================================
 Write-Step "[5/5] 啟動服務 $url（關閉本視窗即停止服務）…"
+Write-Host ""
 
-$browserJob = $null
-if (-not $NoBrowser) {
-    $browserJob = Start-Job -ScriptBlock {
-        param($targetUrl)
-        for ($i = 0; $i -lt 120; $i++) {
-            try {
-                $response = Invoke-WebRequest -Uri "$targetUrl/api/health" -UseBasicParsing -TimeoutSec 2
-                if ($response.StatusCode -eq 200) {
-                    Start-Process $targetUrl
-                    break
-                }
-            } catch { }
-            Start-Sleep -Milliseconds 500
-        }
-    } -ArgumentList $url
-}
+# ---------------------------------------------------------------------------
+# 為什麼不用 Start-Job 開瀏覽器（實際事故，勿改回去，詳見 ansys-gs-hub/start.ps1）
+#
+# 舊版用 Start-Job 開一個背景工作輪詢連接埠、就緒後呼叫 Start-Process 開瀏覽器。
+# Start-Job 會另外啟動一個 PowerShell 子程序並在其中執行序列化的 script block，
+# 這正是防毒軟體的行為偵測特徵。實測在裝有 WithSecure Client Security 的機器上，
+# 該子程序被判定為 Trojan:AMSI/SuspiciousExecute.A 直接攔截，瀏覽器完全沒開，
+# 使用者連一個錯誤訊息都看不到。
+#
+# 現在改成：uvicorn 以「子程序」執行（啟動的是 python.exe，不是 PowerShell），
+# 主程序自己輪詢 /api/health、就緒後在完整互動 session 裡直接開瀏覽器。
+# 全程不產生任何 PowerShell 子程序，開啟失敗時一律把網址明顯印出來。
+# ---------------------------------------------------------------------------
 
 Push-Location $backend
+$server = $null
 try {
-    & $py -m uvicorn app.main:app --host 127.0.0.1 --port $Port
-} finally {
-    Pop-Location
-    if ($browserJob) {
-        Stop-Job -Job $browserJob -ErrorAction SilentlyContinue
-        Remove-Job -Job $browserJob -Force -ErrorAction SilentlyContinue
+    $server = Start-Process -FilePath $py `
+        -ArgumentList @("-m", "uvicorn", "app.main:app", "--host", "127.0.0.1", "--port", "$Port") `
+        -NoNewWindow -PassThru
+
+    $ready = $false
+    for ($i = 0; $i -lt 120; $i++) {
+        if ($server.HasExited) { break }
+        Start-Sleep -Milliseconds 500
+        try {
+            $health = Invoke-WebRequest -Uri "$url/api/health" -UseBasicParsing -TimeoutSec 2
+            if ($health.StatusCode -eq 200) { $ready = $true; break }
+        } catch { }
+    }
+
+    if ($ready -and -not $NoBrowser) {
+        $opened = $false
+        try {
+            Start-Process $url
+            $opened = $true
+        } catch { }
+        Write-Host ""
+        if ($opened) {
+            Write-Ok "服務已就緒，已開啟瀏覽器：$url"
+        } else {
+            Write-Fail "服務已就緒，但無法自動開啟瀏覽器。"
+            Write-Fail "請自行在瀏覽器輸入下列網址："
+            Write-Host "    $url" -ForegroundColor Cyan
+        }
+    } elseif ($ready) {
+        Write-Host ""
+        Write-Ok "服務已就緒：$url"
+    } elseif (-not $server.HasExited) {
+        Write-Host ""
+        Write-Fail "服務啟動逾時，仍未回應健康檢查。請自行在瀏覽器輸入下列網址確認："
+        Write-Host "    $url" -ForegroundColor Cyan
     }
     Write-Host ""
-    Write-Host "服務已停止。" -ForegroundColor Cyan
+
+    if (-not $server.HasExited) {
+        Wait-Process -Id $server.Id
+    }
+} finally {
+    Pop-Location
+
+    if ($null -ne $server) {
+        try {
+            if (-not $server.HasExited) {
+                & taskkill /PID $server.Id /T /F | Out-Null
+                Start-Sleep -Milliseconds 500
+            }
+        } catch { }
+        try {
+            if (-not $server.HasExited) { $server.Kill() }
+        } catch { }
+    }
+
+    Write-Host ""
+    $leftover = Get-NetTCPConnection -LocalPort $Port -State Listen -ErrorAction SilentlyContinue
+    if ($leftover) {
+        Write-Fail "服務已結束，但連接埠 $Port 仍被佔用（PID $($leftover[0].OwningProcess)）。"
+        Write-Fail "下次啟動若顯示連接埠被佔用，請先結束該程序。"
+    } else {
+        Write-Ok "服務已結束，連接埠 $Port 已釋放。"
+    }
 }
