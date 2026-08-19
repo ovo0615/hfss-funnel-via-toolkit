@@ -1,7 +1,5 @@
 # HFSS 3D 漏斗狀 Via 網頁版建模工具（Web App）
 
-此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
-
 ## 簡介
 
 將原本基於 Tkinter 的 `funnel_via_gui.py` 轉換為網頁應用程式。前端使用 React + Vite 搭配 Three.js 提供即時 3D 幾何預覽，後端使用 FastAPI 與 PyAEDT 負責實際的模型控制與生成。

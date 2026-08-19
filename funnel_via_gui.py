@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # =====================================================================
 #  HFSS 3D 漏斗狀（堆疊雷射微孔 / stacked laser via）建模工具  ── GUI 版
-#  此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供
 # ---------------------------------------------------------------------
 #  用途：
 #    HFSS 3D Layout 只能建「等徑圓柱 via」，無法做漏斗狀 taper。
@@ -270,10 +269,6 @@ class FunnelViaGUI:
         self.txt_log = tk.Text(lf, height=8, font=FONT_CODE, state="disabled",
                                background="#1e1e1e", foreground="#d4d4d4")
         self.txt_log.pack(fill="both", expand=True, padx=4, pady=4)
-
-        # 頁尾署名
-        ttk.Label(self.root, text="此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供",
-                  foreground="#888").pack(pady=(0, 6))
 
         self._refresh_src()
         self._draw_preview()

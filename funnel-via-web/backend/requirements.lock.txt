@@ -1,5 +1,4 @@
 # Funnel Via Web App - 後端直接相依套件（已實測版本）
-# 此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
 #
 # 實測環境：Windows 11 x64 + Python 3.10.20 / 3.12.x（64 位元）
 # 安裝方式：由 start.bat 自動於 backend\.venv 內安裝，使用者不需手動執行。

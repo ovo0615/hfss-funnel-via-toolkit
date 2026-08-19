@@ -1,7 +1,6 @@
 @echo off
 REM =============================================================================
 REM  Funnel Via Web App - Windows 一鍵啟動（production 模式）
-REM  此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
 REM
 REM  用法：
 REM    start.bat                    以預設埠 8010 啟動
