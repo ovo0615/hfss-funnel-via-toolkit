@@ -1,4 +1,3 @@
-// 此範本由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";

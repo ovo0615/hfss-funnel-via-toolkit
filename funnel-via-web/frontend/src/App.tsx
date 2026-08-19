@@ -1,4 +1,3 @@
-// 此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { connectAedt, releaseAedt, readStackup, grabVias, buildFunnels } from './api';
 import Preview3D from './components/Preview3D';
@@ -207,7 +206,6 @@ export default function App() {
     <div className="app-container">
       <div className="header">
         <h1>HFSS 漏斗 Via 網頁建模工具</h1>
-        <div className="author">此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供</div>
       </div>
       
       <div className="panel" style={{ marginBottom: 15 }}>

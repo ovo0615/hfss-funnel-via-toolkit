@@ -6,7 +6,6 @@
  使用者不需要 Node.js，前端已預先建置於 frontend\dist，由 FastAPI 以
  單一 localhost 埠一併服務。
 
- 此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
 =============================================================================
 #>
 
@@ -58,7 +57,6 @@ function Write-Fail([string]$text) {
 }
 
 Write-Host "==== Funnel Via Web App 啟動中 ====" -ForegroundColor Cyan
-Write-Host "此工具由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。" -ForegroundColor DarkGray
 Write-Host ""
 
 # =============================================================================

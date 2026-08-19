@@ -1,4 +1,3 @@
-// 此範本由虎門科技資深技術工程師 Jeff Hong 洪敬傑提供。
 export type Vec3 = [number, number, number];
 
 export const COLORS = {
